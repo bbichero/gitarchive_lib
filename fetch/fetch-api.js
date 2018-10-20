@@ -30,11 +30,11 @@ module.exports = function (path, method, config, form = null) {
 		self.resolve = resolve;
 		self.reject = reject;
 		// Make HTTP request
-		makeRequest(options, form = null);
+		makeRequest(options, reject, resolve, form = null);
 	});
 };
 
-function	makeRequest (options, form = false, loop = false) {
+function	makeRequest (options, reject, resolve, form = false, loop = false) {
 	let req;
 
 	try {
@@ -43,26 +43,26 @@ function	makeRequest (options, form = false, loop = false) {
 			let bodyResponse = "";
 
 			if (res.statusCode === 401)
-				this.reject({code: 401, message: "Authentication required."});
+				reject({code: 401, message: "Authentication required."});
 			else if (res.statusCode === 302) {
 				let newOptions = options;
 				newOptions.path = res.headers["location"];
 				if (!loop)
-					this.makeRequest(newOptions, form, true);
+					makeRequest(newOptions, form, true);
 			}
 			res.on("data", data => { bodyResponse += data; });
 			res.on("end", () => {
 				let jsonResponse = {};
 				try {
 					jsonResponse = JSON.parse(bodyResponse);
-					this.resolve(jsonResponse);
+					resolve(jsonResponse);
 				}
-				catch (e) { this.reject({code: 404, message: "No response from API."}); }
+				catch (e) { reject({code: 404, message: "No response from API."}); }
 			});
 		});
-		req.on("error", (e) => { this.reject({code: 500, message: "Unable to contact API."}); })
+		req.on("error", (e) => { reject({code: 500, message: "Unable to contact API."}); })
 	}
-	catch (e) { this.reject({code: 500, message: "Unable to contact API."}); }
+	catch (e) { reject({code: 500, message: "Unable to contact API."}); }
 
 	// write data to request body
 	if (form)
