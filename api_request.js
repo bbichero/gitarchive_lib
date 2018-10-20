@@ -5,7 +5,7 @@ const config = require('../config.js');
 
 module.exports = {
 
-	resource: function (ResourceItem) {
+	resource: function (ResourceItem={}) {
 
 		for (key in Resource)
 			{ ResourceItem[key] = Resource[key]; }
@@ -77,6 +77,17 @@ Resource = {
 	// get() stands for GET request
 	// set() stands for PUT request
 	// delete() stands for DELETE request
+
+	createResource: function (resourceUrl) {
+
+		this.options.path = '/resources/';
+		this.options.method = 'POST';
+		this.options.onFailureMessage = 'Unable to create resource on database.';
+		this.options.headers["Content-Type"] = "application/x-www-form-urlencoded"
+		this.options.body = 'location=' + resourceUrl;
+
+		return fetchJSON(this.options);
+	},
 
 	setRawBody: function (body) {
 
