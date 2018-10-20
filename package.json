@@ -1,5 +1,5 @@
 {
-	"name": "gitarchive-lib",
+	"name": "gitarchive_lib",
 	"version": "0.1.0",
 	"description": "Library function to all gitarchive microservice",
 	"main": "native_request.js",
