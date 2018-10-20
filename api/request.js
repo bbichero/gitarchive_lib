@@ -1,7 +1,6 @@
 const http = require('http');
 const https = require('https');
-const APIError = require('./api_error');
-const config = require('../config.js');
+const APIError = require('./error');
 
 module.exports = {
 
@@ -39,22 +38,25 @@ module.exports = {
 
 // Request options config
 
-RequestOptions = function (type, path, usercontent_id) {
+RequestOptions = function (config, type, path, usercontent_id) {
 
 	const _path = (typeof path == "string") ? path : "";
-
 	options = {};
-	if (type == "api") {
-		options.hostname = config.services.api.hostname;
-		options.port = config.services.api.port;
-		options.path_prefix = config.services.api.version;
-		options.headers = { Authorization: 'Bearer ' + config.services.api.token }
+
+	if (!["api", "usercontent", null].indexOf(type)) {
+		console.log("Invalid request type send :", type);
+		process.exit(1);
 	}
-	else if (type == "usercontent") {
-		options.hostname = config.services.usercontent.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
-		options.port = config.services.usercontent.port;
-		options.path_prefix = config.services.usercontent.version;
-		options.headers = { Authorization: 'Bearer ' + config.services.usercontent.token }
+	if (["api", "usercontent"].indexOf(type)) {
+		if (!config.hostname || !config.port || !config.version || !config.token) {
+			console.log("Missing config element sent.");
+			process.exit(1);
+		}
+
+		options.hostname = config.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
+		options.port = config.port;
+		options.path_prefix = config.version;
+		options.headers = { Authorization: 'Bearer ' + config.token }
 	}
 	else
 		options.path_prefix = "/v1";

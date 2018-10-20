@@ -1,7 +1,6 @@
-const promise		= require('bluebird'); // or any other Promise/A+ compatible library;
-const IS_PRODUCTION	= (process.env.NODE_ENV == 'production');
+const promise		= require("bluebird"); // or any other Promise/A+ compatible library;
 const config	    	= require("../config");
-const APIError = require('./api_error');
+const APIError		= require('./api/error');
 
 const initOptions	= {
 	    promiseLib: promise // overriding the default (ES6 Promise);

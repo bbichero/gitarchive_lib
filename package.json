@@ -24,5 +24,12 @@
 	"bugs": {
 		"url": "https://github.com/bbichero/gitarchive_lib/issues"
 	},
-	"homepage": "https://github.com/bbichero/gitarchive_lib#readme"
+	"homepage": "https://github.com/bbichero/gitarchive_lib#readme",
+	"dependencies": {
+		"bluebird": "^3.5.2",
+		"http": "0.0.0",
+		"https": "^1.0.0",
+		"pg-promise": "^8.5.1",
+		"url": "^0.11.0"
+	}
 }
