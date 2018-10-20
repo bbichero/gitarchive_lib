@@ -5,21 +5,20 @@ const config = require('../config.js');
 
 module.exports = {
 
-	resource: function (ResourceItem={}) {
+	resource: function (ResourceItem) {
 
 		for (key in Resource)
 			{ ResourceItem[key] = Resource[key]; }
 
 		ResourceItem.options = RequestOptions('api');
-		
 		return ResourceItem;
 	},
 
 	usercontent: function (ResourceItem) {
-	
+
 		for (key in Usercontent)
 			{ ResourceItem[key] = Usercontent[key]; }
-		
+
 		ResourceItem.options = RequestOptions('usercontent', null, ResourceItem._usercontent_id);
 		return ResourceItem;
 	},
@@ -27,10 +26,10 @@ module.exports = {
 	scraper: function () {
 
 		const obj = {};
-		
+
 		for (key in Scraper)
 			{ obj[key] = Scraper[key]; }
-		
+
 		obj.options = RequestOptions('api');
 		return obj;
 
@@ -64,9 +63,10 @@ RequestOptions = function (type, path, usercontent_id) {
 	return options;
 }
 
+
 /**
  * Resource class
- */ 
+ */
 
 Resource = {
 
@@ -78,28 +78,17 @@ Resource = {
 	// set() stands for PUT request
 	// delete() stands for DELETE request
 
-	createResource: function (resourceUrl) {
-	
-		this.options.path = '/resources/';
-		this.options.method = 'POST';
-		this.options.onFailureMessage = 'Unable to create resource on database.';
-		this.options.headers["Content-Type"] = "application/x-www-form-urlencoded"
-		this.options.body = 'location=' + resourceUrl;
-		
-		return fetchJSON(this.options);
-	},
-
 	setRawBody: function (body) {
-		
+
 		this.options.path = '/resources/' + this.id + '/raw/body';
-		
+
 		return this._setRaw(this.options, body);
 	},
 
 	setRawHeaders: function (headers) {
 
 		this.options.path = '/resources/' + this.id + '/raw/headers';
-		
+
 		return this._setRaw(this.options, headers);
 	},
 
@@ -107,24 +96,24 @@ Resource = {
 
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
-			
+
 		options.method = "POST";
 		options.headers['Content-Type'] = "application/octet-stream";
-		
+
 		return new Promise(function (resolve, reject) {
 
 			try {
 
 				const request = http.request(options, res => {
-						
+
 					if (res.statusCode === 200)
 						{ resolve(true); }
-				
+
 					reject(res.statusCode);
 				});
 
 				request.write(data);
-				request.on("error", (e) => { reject(APIError.badImplementation('Unable to connect with API.')); });
+				request.on("error", (e) => { reject(APIError.badImplementation('Unable to connect with API.\n' + JSON.stringify(e))); });
 				request.end();
 			}
 			catch (e) { reject(e); }
@@ -144,13 +133,13 @@ Resource = {
 		this.options.path = '/resources/' + this.id + '/fetches';
 		this.options.method = "POST";
 		this.options.headers["Content-Type"] = "application/x-www-form-urlencoded"
-		
+
 		function dateToISOString (date) {
 			return (typeof date !== "undefined" && typeof date.getMonth == "function")
 			? date.toISOString()
 			: null;
 		}
-		
+
 		let body = [];
 		body.push('response_status_code=' + Number(fetchResponse.statusCode));
 		body.push('response_content_type=' + encodeURIComponent(fetchResponse.contentType));
@@ -173,7 +162,7 @@ Resource = {
  */
 
 Usercontent = {
-	
+
 	createResource: function () {
 
 		this.options.path = '/resources/' + this.id;
@@ -231,12 +220,12 @@ Scraper = {
  */
 
 function fetchJSON (options) {
-	
+
 	return new Promise(function(resolve, reject) {
-	
+
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
-		
+
 		const port = options.port == 443 ? https : http
 		const req = port.request(options, (APIResponse) => {
 
@@ -244,29 +233,26 @@ function fetchJSON (options) {
 			let body = [];
 			APIResponse.on('data', (chunk) => { body.push(chunk); });
 			APIResponse.on('end', () => {
-				
+
 				try {
 					body = Buffer.concat(body).toString();
-					
+
 					let response = JSON.parse(body);
-					
+
 					if (response.statusCode && (response.statusCode >= 200 && response.statusCode < 300))
 						{ return resolve(response); }
 					else
 						{ return reject(response); }
 				}
 				catch (e)
-					{ return reject(APIError.badImplementation('Failed to parse API response as JSON')); }
+					{ return reject(APIError.badImplementation('Failed to parse API response as JSON.\n' + JSON.stringify(e))); }
 			});
 		});
 
 		if (typeof options.body !== "undefined")
 			{ req.write(options.body); }
 
-		req.on("error", (err) => {
-			console.log(err)
-			return reject(APIError.badImplementation('Failed to contact API'));
-		});
+		req.on("error", (e) => { return reject(APIError.badImplementation('Failed to contact API.\n' + JSON.stringify(e))); });
 
 		req.end();
 	});
