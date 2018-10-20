@@ -13,5 +13,5 @@ module.exports = {
 	success: throwSuccess,
 	git: gitModule,
 	Ifetch: Ifetch,
-	APIfetch: fetchAPI
+	fetchAPI: fetchAPI
 }
