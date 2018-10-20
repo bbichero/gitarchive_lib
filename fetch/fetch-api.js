@@ -1,38 +1,37 @@
 const http	= require("http");
 
 module.exports = function (path, method, config, form = null) {
-		// use api error lib
-		if (method !== "POST" && method !== "GET")
-			throw new Error("Invalid method given.");
-		if (method === "POST" && !form)
-			throw new Error("Form must be provide.");
-		if (!config.port || !config.hostname || !config.token || !config.version)
-			throw new Error("Config variable must be send.");
+	// use api error lib
+	if (method !== "POST" && method !== "GET")
+		throw new Error("Invalid method given.");
+	if (method === "POST" && !form)
+		throw new Error("Form must be provide.");
+	if (!config.port || !config.hostname || !config.token || !config.version)
+		throw new Error("Config variable must be send.");
 
-		// Prepare API call.
-		const options = {
-			port: config.port,
-			hostname: config.hostname,
-			path: "/" + config.version + path,
-			method: method,
-			agent: false,
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": "Bearer " + config.token
-			}
-		};
-		if (form)
-			options.headers["Content-Length"] = Buffer.byteLength(form);
+	// Prepare API call.
+	const options = {
+		port: config.port,
+		hostname: config.hostname,
+		path: "/" + config.version + path,
+		method: method,
+		agent: false,
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + config.token
+		}
+	};
+	if (form)
+		options.headers["Content-Length"] = Buffer.byteLength(form);
 
-		let self = this;
+	let self = this;
 
-		return new Promise((resolve, reject) => {
-			self.resolve = resolve;
-			self.reject = reject;
-			// Make HTTP request
-			makeRequest(options, form = null);
-		});
-	}
+	return new Promise((resolve, reject) => {
+		self.resolve = resolve;
+		self.reject = reject;
+		// Make HTTP request
+		makeRequest(options, form = null);
+	});
 };
 
 function	makeRequest (options, form = false, loop = false) {
