@@ -26,7 +26,9 @@
 	},
 	"homepage": "https://github.com/bbichero/gitarchive_lib#readme",
 	"dependencies": {
+		"bluebird": "^3.5.2",
 		"http": "0.0.0",
-		"https": "^1.0.0"
+		"https": "^1.0.0",
+		"pg-promise": "^8.5.1"
 	}
 }
