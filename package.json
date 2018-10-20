@@ -1,0 +1,27 @@
+{
+  "name": "gitarchive_lib",
+  "version": "0.1.0",
+  "description": "Library function to all gitarchive microservice",
+  "main": "native_request.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbichero/gitarchive_lib.git"
+  },
+  "keywords": [
+    "gitarchive",
+    "git",
+    "scraper",
+    "usercontent",
+    "api",
+    "raw"
+  ],
+  "author": "GitBotnet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bbichero/gitarchive_lib/issues"
+  },
+  "homepage": "https://github.com/bbichero/gitarchive_lib#readme"
+}
