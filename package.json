@@ -9,7 +9,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bbichero/gitarchive_lib.git#0.1v"
+		"url": "git+https://github.com/bbichero/gitarchive_lib.git"
 	},
 	"keywords": [
 		"gitarchive",
