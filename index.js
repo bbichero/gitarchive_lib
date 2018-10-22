@@ -1,6 +1,6 @@
 const requestService	= require("./api/request");
 const throwError	= require("./api/error");
-const content		= require("./api/setContent");
+const content		= require("./api/userContent");
 const errorController	= require("./controllers/error");
 const throwSuccess	= require("./api/success");
 const gitModule		= require("./git");
