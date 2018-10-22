@@ -16,7 +16,7 @@ module.exports = {
 	usercontent: function (config, ResourceItem) {
 
 		for (key in Usercontent)
-			{ ResourceItem[key] = Usercontent[key]; }
+			ResourceItem[key] = Usercontent[key];
 
 		ResourceItem.options = RequestOptions(config, 'usercontent', null, ResourceItem._usercontent_id);
 		return ResourceItem;
