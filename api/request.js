@@ -2,6 +2,9 @@ const http = require('http');
 const https = require('https');
 const APIError = require('./error');
 
+// Need to separate fetchJSON function to include it everywhere a request is made
+// perhabs merge fetchJSON with fetch-api ?
+
 module.exports = {
 
 	resource: function (config, ResourceItem={}) {

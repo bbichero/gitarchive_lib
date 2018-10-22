@@ -52,7 +52,6 @@ module.exports = {
 
 	setRaw: (req, res, next, config, ResourceItem, fileName) => {
 
-		console.log(APIRequest)
 		const options = APIRequest.usercontent(config, ResourceItem).options;
 
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
