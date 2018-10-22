@@ -1,5 +1,6 @@
 const requestService	= require("./api/request");
 const throwError	= require("./api/error");
+const content		= require("./api/setContent");
 const errorController	= require("./controllers/error");
 const throwSuccess	= require("./api/success");
 const gitModule		= require("./git");
@@ -13,5 +14,7 @@ module.exports = {
 	success: throwSuccess,
 	git: gitModule,
 	Ifetch: Ifetch,
-	fetchAPI: fetchAPI
+	fetchAPI: fetchAPI,
+	setRaw: content.setRaw,
+	getRaw: content.getRaw,
 }
