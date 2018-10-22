@@ -12,8 +12,8 @@ module.exports = class CustomBoom extends Error {
         const error = new Error(err ? err : undefined);   // Avoids settings null message
         Error.captureStackTrace(error);                   // Filter the stack to our external API
         error.data = data;
-		error.statusCode = statusCode;
-		error.message = err;
+	error.statusCode = statusCode;
+	error.message = err;
 		
         return error;
     }
