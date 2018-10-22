@@ -1,3 +1,4 @@
+const https	= require("https");
 const http	= require("http");
 
 module.exports = function (path, method, config, form = null) {
@@ -30,15 +31,18 @@ module.exports = function (path, method, config, form = null) {
 		self.resolve = resolve;
 		self.reject = reject;
 		// Make HTTP request
-		makeRequest(options, reject, resolve, form = null);
+		makeRequest(options, self, form = null);
 	});
 };
 
-function	makeRequest (options, reject, resolve, form = false, loop = false) {
+function	makeRequest (options, self, form = false, loop = false) {
 	let req;
 
 	try {
-		req = http.request(options, (res) => {
+		console.log(options)
+		const port = options.port == 443 ? https : http
+
+		req = port.request(options, (res) => {
 			res.setEncoding('utf8');
 			let bodyResponse = "";
 
@@ -48,24 +52,34 @@ function	makeRequest (options, reject, resolve, form = false, loop = false) {
 				let newOptions = options;
 				newOptions.path = res.headers["location"];
 				if (!loop)
-					makeRequest(newOptions, form, true);
+					makeRequest(newOptions, self, form, true);
 			}
 			res.on("data", data => { bodyResponse += data; });
 			res.on("end", () => {
 				let jsonResponse = {};
+				console.log("body:", bodyResponse)
 				try {
 					jsonResponse = JSON.parse(bodyResponse);
-					resolve(jsonResponse);
+					self.resolve(jsonResponse);
 				}
-				catch (e) { reject({code: 404, message: "No response from API."}); }
+				catch (e) {
+					console.log("Error parsing response:", e)
+					self.reject({code: 404, message: "No response from API."});
+				}
 			});
 		});
-		req.on("error", (e) => { reject({code: 500, message: "Unable to contact API."}); })
+		req.on("error", (e) => {
+			console.log("Error request return:", e)
+			self.reject({code: 500, message: "Unable to contact API."});
+		})
 	}
-	catch (e) { reject({code: 500, message: "Unable to contact API."}); }
+	catch (e) {
+		console.log("Error request:", e)
+		self.reject({code: 500, message: "Unable to contact API."});
+	}
 
 	// write data to request body
 	if (form)
-		req.write(postData);
+		req.write(form);
 	req.end();
 };
