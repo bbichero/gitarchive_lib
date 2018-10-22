@@ -13,6 +13,7 @@ module.exports = {
 			{ ResourceItem[key] = Resource[key]; }
 
 		ResourceItem.options = RequestOptions(config, "api");
+		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -22,6 +23,7 @@ module.exports = {
 			ResourceItem[key] = Usercontent[key];
 
 		ResourceItem.options = RequestOptions(config, 'usercontent', null, ResourceItem._usercontent_id);
+		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -33,6 +35,7 @@ module.exports = {
 			{ obj[key] = Scraper[key]; }
 
 		obj.options = RequestOptions(config, "api");
+		console.log("options:", obj.options)
 		return obj;
 	}
 
@@ -46,12 +49,10 @@ RequestOptions = function (config, type, path, usercontent_id) {
 	options = {};
 
 	if (["api", "usercontent", null].indexOf(type) < 0) {
-		console.log("-" + type +  "-")
 		console.log("Invalid request type send :", type);
 		process.exit(1);
 	}
 	if (["api", "usercontent"].indexOf(type) > -1) {
-		console.log("type:", config);
 		if (!config.hostname || !config.port || !config.version || !config.token) {
 			console.log("Missing config element sent.");
 			process.exit(1);
