@@ -12,6 +12,6 @@ module.exports = {
 	errorController: errorController,
 	success: throwSuccess,
 	git: gitModule,
-	Ifetch: Ifetch.Ifetch,
+	Ifetch: Ifetch,
 	fetchAPI: fetchAPI
 }
