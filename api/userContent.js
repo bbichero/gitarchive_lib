@@ -1,5 +1,4 @@
 const lib = require('gitarchive_lib');
-const config	= require("../../config")
 
 const APIRequest = lib.request;
 const APIError = lib.error;
@@ -39,9 +38,9 @@ module.exports = {
 		catch (e) { console.error(e); return next(APIError.badImplementation('Unable to connect with usercontent')); }
 	},
 
-	getRaw: function (req, res, next, ResourceItem, commitId, fileName) {
+	getRaw: function (req, res, next, config, ResourceItem, commitId, fileName) {
 
-		const options = APIRequest.usercontent(config.services.api, ResourceItem).options;
+		const options = APIRequest.usercontent(config, ResourceItem).options;
 
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + commitId + '/' + fileName;
 		options.method = 'GET';
@@ -50,9 +49,9 @@ module.exports = {
 		return this.getUsercontentRaw(options, req, res, next);
 	},
 
-	setRaw: function (req, res, next, ResourceItem, fileName) {
+	setRaw: function (req, res, next, config, ResourceItem, fileName) {
 
-		const options = APIRequest.usercontent(config.services.api, ResourceItem).options;
+		const options = APIRequest.usercontent(config, ResourceItem).options;
 
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
 		options.method = 'POST';
