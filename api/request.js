@@ -13,7 +13,6 @@ module.exports = {
 			{ ResourceItem[key] = Resource[key]; }
 
 		ResourceItem.options = RequestOptions(config, "api");
-		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -23,7 +22,6 @@ module.exports = {
 			ResourceItem[key] = Usercontent[key];
 
 		ResourceItem.options = RequestOptions(config, 'usercontent', null, ResourceItem._usercontent_id);
-		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -35,7 +33,6 @@ module.exports = {
 			{ obj[key] = Scraper[key]; }
 
 		obj.options = RequestOptions(config, "api");
-		console.log("options:", obj.options)
 		return obj;
 	}
 
@@ -241,6 +238,7 @@ function fetchJSON (options) {
 
 	return new Promise(function(resolve, reject) {
 
+		console.log("option:", options)
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
