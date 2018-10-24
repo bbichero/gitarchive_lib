@@ -63,18 +63,18 @@ function	makeRequest (options, self, form = false, loop = false) {
 					self.resolve(jsonResponse);
 				}
 				catch (e) {
-					console.log("Error parsing response:", e)
+					console.error("Error parsing response:", e)
 					self.reject({code: 404, message: "No response from API."});
 				}
 			});
 		});
 		req.on("error", (e) => {
-			console.log("Error request return:", e)
+			console.error("Error request return:", e)
 			self.reject({code: 500, message: "Unable to contact API."});
 		})
 	}
 	catch (e) {
-		console.log("Error request:", e)
+		console.error("Error request:", e)
 		self.reject({code: 500, message: "Unable to contact API."});
 	}
 

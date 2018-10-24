@@ -127,7 +127,10 @@ Resource = {
 				});
 
 				request.write(data);
-				request.on("error", (e) => { reject(APIError.badImplementation('Unable to connect with API.\n' + JSON.stringify(e))); });
+				request.on("error", (e) => {
+					console.error("Set raw Error:", e);
+					reject(APIError.badImplementation('Unable to connect with API.'));
+				});
 				request.end();
 			}
 			catch (e) { reject(e); }
@@ -238,7 +241,7 @@ function fetchJSON (options) {
 
 	return new Promise(function(resolve, reject) {
 
-		console.log("option:", options)
+		console.log("Fetch JSON option:", options)
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
@@ -252,7 +255,7 @@ function fetchJSON (options) {
 
 				try {
 					body = Buffer.concat(body).toString();
-console.log("body:", body)
+					console.log("body:", body)
 
 					let response = JSON.parse(body);
 
@@ -261,16 +264,20 @@ console.log("body:", body)
 					else
 						{ return reject(response); }
 				}
-				catch (e)
-					{ return reject(APIError.badImplementation('Failed to parse API response as JSON.\n' + JSON.stringify(e))); }
+				catch (e) {
+					console.error("FetchJSON catch Error:", e);
+					return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
+				}
 			});
 		});
 
 		if (typeof options.body !== "undefined")
 			{ req.write(options.body); }
 
-		req.on("error", (e) => { return reject(APIError.badImplementation('Failed to contact API.\n' + JSON.stringify(e))); });
-
+		req.on("error", (e) => {
+			console.error("Req.on Error:", e);
+			return reject(APIError.badImplementation('Failed to contact API.'));
+		});
 		req.end();
 	});
 };
