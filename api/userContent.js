@@ -16,13 +16,20 @@ module.exports = {
 				usercontent.on("end", () => { return res.end(); });
 			});
 
-			request.on("error", (e) => { console.error(e); return next(APIError.badImplementation('Unable to connect with usercontent')); })
+			request.on("error", (e) => {
+				console.error("getUsercontentRaw req.on error:", e);
+				return next(APIError.badImplementation('Unable to connect with usercontent'));
+			})
 		}
-		catch (e) { console.error(e); return next(APIError.badImplementation('Unable to connect with usercontent')); }
+		catch (e) {
+			console.error("getUsercontentRaw catch", e);
+			return next(APIError.badImplementation('Unable to connect with usercontent'));
+		}
 	},
 
 	setUsercontentRaw: (options, req, res, next) => {
 		try {
+			console.log("options setUsercontentRaw:", options)
 			var request = https.request(options, usercontent => {
 
 				//res.writeHead(usercontent.statusCode, usercontent.headers);
@@ -32,11 +39,18 @@ module.exports = {
 				usercontent.on("end", () => { return res.end(); });
 			});
 			request.write(req.body);
+			console.log(Buffer.concat(req.body).toString())
 
-			request.on("error", (e) => { console.error(e); return next(APIError.badImplementation('Unable to connect with usercontent')); });
+			request.on("error", (e) => {
+				console.error("setUsercontentRaw req.on error:", e);
+				return next(APIError.badImplementation('Unable to connect with usercontent'));
+			});
 			request.end();
 		}
-		catch (e) { console.error(e); return next(APIError.badImplementation('Unable to connect with usercontent')); }
+		catch (e) {
+			console.error("setUsercontentRaw catch error:", e);
+			return next(APIError.badImplementation('Unable to connect with usercontent'));
+		}
 	},
 
 	getRaw: (req, res, next, config, ResourceItem, commitId, fileName) => {
@@ -52,8 +66,8 @@ module.exports = {
 
 	setRaw: (req, res, next, config, ResourceItem, fileName) => {
 
+		console.log("in set raw")
 		const options = APIRequest.usercontent(config, ResourceItem).options;
-
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
 		options.method = 'POST';
 		options.onFailureMessage = 'Unable to set raw data on usercontent.';
