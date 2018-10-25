@@ -2,38 +2,36 @@ const http = require('http');
 const https = require('https');
 const APIError = require('./error');
 
-// Need to separate fetchJSON function to include it everywhere a request is made
-// perhabs merge fetchJSON with fetch-api ?
-
 module.exports = {
 
-	resource: function (config, ResourceItem={}) {
+	resource: function (ResourceItem={}) {
 
 		for (key in Resource)
 			{ ResourceItem[key] = Resource[key]; }
 
-		ResourceItem.options = RequestOptions(config, "api");
+		ResourceItem.options = RequestOptions('api');
 		return ResourceItem;
 	},
 
-	usercontent: function (config, ResourceItem) {
+	usercontent: function (ResourceItem) {
 
 		for (key in Usercontent)
-			ResourceItem[key] = Usercontent[key];
+			{ ResourceItem[key] = Usercontent[key]; }
 
-		ResourceItem.options = RequestOptions(config, 'usercontent', null, ResourceItem._usercontent_id);
+		ResourceItem.options = RequestOptions('usercontent', null, ResourceItem._usercontent_id);
 		return ResourceItem;
 	},
 
-	scraper: function (config) {
+	scraper: function () {
 
 		const obj = {};
 
 		for (key in Scraper)
 			{ obj[key] = Scraper[key]; }
 
-		obj.options = RequestOptions(config, "api");
+		obj.options = RequestOptions('api');
 		return obj;
+
 	}
 
 };
@@ -45,11 +43,11 @@ RequestOptions = function (config, type, path, usercontent_id) {
 	const _path = (typeof path == "string") ? path : "";
 	options = {};
 
-	if (["api", "usercontent", null].indexOf(type) < 0) {
+	if (!["api", "usercontent", null].indexOf(type)) {
 		console.log("Invalid request type send :", type);
 		process.exit(1);
 	}
-	if (["api", "usercontent"].indexOf(type) > -1) {
+	if (["api", "usercontent"].indexOf(type)) {
 		if (!config.hostname || !config.port || !config.version || !config.token) {
 			console.log("Missing config element sent.");
 			process.exit(1);
@@ -57,12 +55,14 @@ RequestOptions = function (config, type, path, usercontent_id) {
 
 		options.hostname = config.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
 		options.port = config.port;
-		options.path_prefix = "/" + config.version;
+		options.path = "/" + config.version + _path;
+		options.path_prefix = config.version;
 		options.headers = { Authorization: 'Bearer ' + config.token }
 	}
-	else
+	else {
 		options.path_prefix = "/v1";
-	options.path = _path;
+		options.path = _path;
+	}
 
 	return options;
 }
@@ -116,9 +116,10 @@ Resource = {
 		options.headers['Content-Type'] = "application/octet-stream";
 
 		return new Promise(function (resolve, reject) {
+
 			try {
-				const port = options.port == 443 ? https : http
-				const request = port.request(options, res => {
+
+				const request = http.request(options, res => {
 
 					if (res.statusCode === 200)
 						{ resolve(true); }
@@ -224,7 +225,6 @@ Scraper = {
 
 		this.options.path = '/scraper/fetch';
 		this.options.method = 'GET';
-		console.log("options:", this.options)
 
 		return fetchJSON(this.options);
 	}
@@ -238,7 +238,6 @@ function fetchJSON (options) {
 
 	return new Promise(function(resolve, reject) {
 
-		console.log("option:", options)
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
@@ -252,7 +251,6 @@ function fetchJSON (options) {
 
 				try {
 					body = Buffer.concat(body).toString();
-console.log("body:", body)
 
 					let response = JSON.parse(body);
 
