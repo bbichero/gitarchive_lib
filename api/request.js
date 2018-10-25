@@ -13,7 +13,6 @@ module.exports = {
 			{ ResourceItem[key] = Resource[key]; }
 
 		ResourceItem.options = RequestOptions(config, "api");
-		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -23,7 +22,6 @@ module.exports = {
 			ResourceItem[key] = Usercontent[key];
 
 		ResourceItem.options = RequestOptions(config, 'usercontent', null, ResourceItem._usercontent_id);
-		console.log("options:", ResourceItem.options)
 		return ResourceItem;
 	},
 
@@ -35,7 +33,6 @@ module.exports = {
 			{ obj[key] = Scraper[key]; }
 
 		obj.options = RequestOptions(config, "api");
-		console.log("options:", obj.options)
 		return obj;
 	}
 
@@ -60,12 +57,14 @@ RequestOptions = function (config, type, path, usercontent_id) {
 
 		options.hostname = config.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
 		options.port = config.port;
+		options.path = "/" + config.version + _path;
 		options.path_prefix = "/" + config.version;
 		options.headers = { Authorization: 'Bearer ' + config.token }
 	}
-	else
+	else {
 		options.path_prefix = "/v1";
-	options.path = _path;
+		options.path = _path;
+	}
 
 	return options;
 }
@@ -230,7 +229,6 @@ Scraper = {
 
 		this.options.path = '/scraper/fetch';
 		this.options.method = 'GET';
-		console.log("options:", this.options)
 
 		return fetchJSON(this.options);
 	}
