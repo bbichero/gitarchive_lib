@@ -38,7 +38,6 @@ module.exports = {
 				usercontent.on("end", () => { return res.end(); });
 			});
 			request.write(req.body);
-
 			request.on("error", (e) => {
 				console.error("setUsercontentRaw req.on error:", e);
 				return next(APIError.badImplementation('Unable to connect with usercontent'));
