@@ -14,7 +14,7 @@ module.exports = function (path, method, config, form = null) {
 	const options = {
 		port: config.port,
 		hostname: config.hostname,
-		path: "/" + config.version + path,
+		path: "/v" + config.version + path,
 		method: method,
 		agent: false,
 		headers: {
