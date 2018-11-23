@@ -29,7 +29,6 @@ module.exports = {
 
 	setUsercontentRaw: (options, req, res, next) => {
 		try {
-			console.log("options setUsercontentRaw:", options)
 			var request = https.request(options, usercontent => {
 
 				//res.writeHead(usercontent.statusCode, usercontent.headers);
@@ -64,7 +63,6 @@ module.exports = {
 
 	setRaw: (req, res, next, config, ResourceItem, fileName) => {
 
-		console.log("in set raw")
 		const options = APIRequest.usercontent(config, ResourceItem).options;
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
 		options.method = 'POST';

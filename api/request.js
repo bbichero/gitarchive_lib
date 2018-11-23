@@ -57,8 +57,8 @@ RequestOptions = function (config, type, path, usercontent_id) {
 
 		options.hostname = config.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
 		options.port = config.port;
-		options.path = "/" + config.version + _path;
-		options.path_prefix = "/" + config.version;
+		options.path = "/v" + config.version + _path;
+		options.path_prefix = "/v" + config.version;
 		options.headers = { Authorization: 'Bearer ' + config.token }
 	}
 	else {
@@ -242,7 +242,6 @@ function fetchJSON (options) {
 
 	return new Promise(function(resolve, reject) {
 
-		console.log("Fetch JSON option:", options)
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
@@ -256,7 +255,6 @@ function fetchJSON (options) {
 
 				try {
 					body = Buffer.concat(body).toString();
-					console.log("body:", body)
 
 					let response = JSON.parse(body);
 

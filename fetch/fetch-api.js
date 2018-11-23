@@ -14,7 +14,7 @@ module.exports = function (path, method, config, form = null) {
 	const options = {
 		port: config.port,
 		hostname: config.hostname,
-		path: "/" + config.version + path,
+		path: "/v" + config.version + path,
 		method: method,
 		agent: false,
 		headers: {
@@ -39,7 +39,6 @@ function	makeRequest (options, self, form = false, loop = false) {
 	let req;
 
 	try {
-		console.log(options)
 		const port = options.port == 443 ? https : http
 
 		req = port.request(options, (res) => {
@@ -56,8 +55,8 @@ function	makeRequest (options, self, form = false, loop = false) {
 			}
 			res.on("data", data => { bodyResponse += data; });
 			res.on("end", () => {
+
 				let jsonResponse = {};
-				console.log("body:", bodyResponse)
 				try {
 					jsonResponse = JSON.parse(bodyResponse);
 					self.resolve(jsonResponse);
