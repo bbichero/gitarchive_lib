@@ -59,7 +59,7 @@ RequestOptions = function (config, type, path, usercontent_id) {
 		options.port = config.port;
 		options.path = "/v" + config.version + _path;
 		options.path_prefix = "/v" + config.version;
-		options.headers = { Authorization: 'Bearer ' + config.token }
+		options.headers = { Authorization: 'Basic ' + config.token }
 	}
 	else {
 		options.path_prefix = "/v1";
