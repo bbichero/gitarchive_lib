@@ -19,7 +19,7 @@ module.exports = function (path, method, config, form = null) {
 		agent: false,
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": "Bearer " + config.token
+			"Authorization": "Basic " + config.token
 		}
 	};
 	if (form)
