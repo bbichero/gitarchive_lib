@@ -14,7 +14,7 @@ module.exports = class CustomBoom extends Error {
         error.data = data;
 	error.statusCode = statusCode;
 	error.message = err;
-	throw new error;
+	throw CustomBoom(error);
 		
         return error;
     }
