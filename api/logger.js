@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require('winston');
 const path = require('path')
 
-const LOG_DIR = path.join(__dirname, '../logs');
+const LOG_DIR = path.join(__dirname, '../../../logs');
 const LOG_ERROR_FILE = path.join(LOG_DIR, "error.log");
 const LOG_INFO_FILE = path.join(LOG_DIR, "combined.log");
 
