@@ -132,12 +132,15 @@ Resource = {
 
 				request.write(data);
 				request.on("error", (e) => {
-					console.error("Set raw Error:", e);
-					reject(APIError.badImplementation('Unable to connect with API.'));
+					console.error("_setRaw Error:", e);
+					return reject(APIError.badImplementation('Unable to connect with API.'));
 				});
 				request.end();
 			}
-			catch (e) { reject(e); }
+			catch (e) {
+				console.error("_setRaw catch Error:", e);
+				return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
+			}
 		});
 	},
 
