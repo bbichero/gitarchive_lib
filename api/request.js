@@ -1,6 +1,7 @@
 const http = require('http');
 const https = require('https');
 const APIError = require('./error');
+const logger	 = require('./logger');
 
 // Need to separate fetchJSON function to include it everywhere a request is made
 // perhabs merge fetchJSON with fetch-api ?
@@ -132,13 +133,13 @@ Resource = {
 
 				request.write(data);
 				request.on("error", (e) => {
-					console.error("_setRaw Error:", e);
+					logger.error("_setRaw Error:", e);
 					return reject(APIError.badImplementation('Unable to connect with API.'));
 				});
 				request.end();
 			}
 			catch (e) {
-				console.error("_setRaw catch Error:", e);
+				logger.error("_setRaw catch Error:", e);
 				return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
 			}
 		});
@@ -266,12 +267,12 @@ function fetchJSON (options) {
 					if (response.statusCode && (response.statusCode >= 200 && response.statusCode < 300))
 						{ return resolve(response); }
 					else {
-						console.error("Error from reponse receive :", e);
+						logger.error("Error from reponse receive :", e);
 						return reject(response);
 					}
 				}
 				catch (e) {
-					console.error("FetchJSON catch Error:", e);
+					logger.error("FetchJSON catch Error:", e);
 					return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
 				}
 			});
@@ -281,7 +282,7 @@ function fetchJSON (options) {
 			{ req.write(options.body); }
 
 		req.on("error", (e) => {
-			console.error("Req.on Error:", e);
+			logger.error("Req.on Error:", e);
 			return reject(APIError.badImplementation('Failed to contact API.'));
 		});
 		req.end();
