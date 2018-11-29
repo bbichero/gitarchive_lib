@@ -2,10 +2,8 @@
  * All API Errors Handler
  */
 
-const lib		= require('../index');
-
-const logger		= lib.logger;
-const APIError		= lib.error;
+const logger		= require('../api/logger');
+const APIError		= require('../api/error');
 
 module.exports = function (err, req, res, next) {
 
