@@ -1,11 +1,12 @@
 /**
  * All API Errors Handler
- *
- * @param {*} err
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
+
+//const logger		= require('../../lib/logger');
+const lib		= require("gitarchive_lib");
+
+const logger		= lib.logger;
+const APIError		= lib.error;
 
 module.exports = function (err, req, res, next) {
 
@@ -26,7 +27,8 @@ module.exports = function (err, req, res, next) {
 	};
 
 	// Doing stuff with logging the error.
-	console.log(err)
+	logger.error(error);
+	throw APIError.badImplementation(error);
 
 	// Returning the error to the client.
 	return res.status(error.statusCode).send(error);
