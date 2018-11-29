@@ -2,8 +2,7 @@
  * All API Errors Handler
  */
 
-//const logger		= require('../../lib/logger');
-const lib		= require("gitarchive_lib");
+const lib		= require('../index');
 
 const logger		= lib.logger;
 const APIError		= lib.error;
