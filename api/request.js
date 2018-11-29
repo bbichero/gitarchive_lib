@@ -265,8 +265,10 @@ function fetchJSON (options) {
 
 					if (response.statusCode && (response.statusCode >= 200 && response.statusCode < 300))
 						{ return resolve(response); }
-					else
-						{ return reject(response); }
+					else {
+						console.error("Error from reponse receive :", e);
+						return reject(response);
+					}
 				}
 				catch (e) {
 					console.error("FetchJSON catch Error:", e);
