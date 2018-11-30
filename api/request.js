@@ -124,7 +124,8 @@ Resource = {
 
 					if (res.statusCode === 200)
 						return resolve(true);
-
+					else if (res.statusCode === 413 && res.statusMessage)
+						return reject(APIError.badImplementation(res.statusMessage));
 					return reject(APIError.badRequest("Invalid reponse code return from remote resource: " + res.statusCode));
 				});
 
