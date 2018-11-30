@@ -26,7 +26,7 @@ module.exports = function (err, req, res, next) {
 	};
 
 	// Doing stuff with logging the error.
-	console.log(err)
+	console.error("console err:", error)
 
 	// Returning the error to the client.
 	return res.status(error.statusCode).send(error);
