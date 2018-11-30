@@ -17,13 +17,11 @@ module.exports = {
 			});
 
 			request.on("error", (e) => {
-				console.error("getUsercontentRaw req.on error:", e);
-				return next(APIError.badImplementation('Unable to connect with usercontent'));
+				return next(APIError.badImplementation('Unable to connect with usercontent', e));
 			})
 		}
 		catch (e) {
-			console.error("getUsercontentRaw catch", e);
-			return next(APIError.badImplementation('Unable to connect with usercontent'));
+			return next(APIError.badImplementation('Unable to connect with usercontent', e));
 		}
 	},
 
@@ -39,14 +37,12 @@ module.exports = {
 			});
 			request.write(req.body);
 			request.on("error", (e) => {
-				console.error("setUsercontentRaw req.on error:", e);
-				return next(APIError.badImplementation('Unable to connect with usercontent'));
+				return next(APIError.badImplementation('Unable to connect with usercontent', e));
 			});
 			request.end();
 		}
 		catch (e) {
-			console.error("setUsercontentRaw catch error:", e);
-			return next(APIError.badImplementation('Unable to connect with usercontent'));
+			return next(APIError.badImplementation('Unable to connect with usercontent', e));
 		}
 	},
 
@@ -64,6 +60,7 @@ module.exports = {
 	setRaw: (req, res, next, config, ResourceItem, fileName) => {
 
 		const options = APIRequest.usercontent(config, ResourceItem).options;
+
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
 		options.method = 'POST';
 		options.onFailureMessage = 'Unable to set raw data on usercontent.';

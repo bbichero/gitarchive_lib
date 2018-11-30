@@ -46,16 +46,11 @@ RequestOptions = function (config, type, path, usercontent_id) {
 	const _path = (typeof path == "string") ? path : "";
 	options = {};
 
-	if (["api", "usercontent", null].indexOf(type) < 0) {
-		console.log("Invalid request type send :", type);
-		process.exit(1);
-	}
 	if (["api", "usercontent"].indexOf(type) > -1) {
 		if (!config.hostname || !config.port || !config.version || !config.token) {
-			console.log("Missing config element sent.");
+			console.error("Invalid config given.");
 			process.exit(1);
 		}
-
 		const basicAuthKey = Buffer.from(config.token + ":").toString('base64');
 
 		options.hostname = config.hostname; // TODO. On production, change to X.usercontent.gitarchive.com
@@ -101,6 +96,7 @@ Resource = {
 	setRawBody: function (body) {
 
 		this.options.path = '/resources/' + this.id + '/raw/body';
+		this.options.onFailureMessage = 'Unable to set raw body on usercontent.';
 
 		return this._setRaw(this.options, body);
 	},
@@ -108,6 +104,7 @@ Resource = {
 	setRawHeaders: function (headers) {
 
 		this.options.path = '/resources/' + this.id + '/raw/headers';
+		this.options.onFailureMessage = 'Unable to set raw header on usercontent.';
 
 		return this._setRaw(this.options, headers);
 	},
@@ -126,21 +123,19 @@ Resource = {
 				const request = port.request(options, res => {
 
 					if (res.statusCode === 200)
-						{ resolve(true); }
+						return resolve(true);
 
-					reject(res.statusCode);
+					return reject(APIError.badRequest("Invalid reponse code return from remote resource: " + res.statusCode));
 				});
 
 				request.write(data);
 				request.on("error", (e) => {
-					logger.error("_setRaw Error:", e);
-					return reject(APIError.badImplementation('Unable to connect with API.'));
+					return reject(APIError.badImplementation('Unable to connect with API.', e));
 				});
 				request.end();
 			}
 			catch (e) {
-				logger.error("_setRaw catch Error:", e);
-				return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
+				return reject(APIError.badImplementation('Failed to parse API response as JSON.', e));
 			}
 		});
 	},
@@ -149,6 +144,7 @@ Resource = {
 
 		this.options.path = '/resources/' + this.id + '/commits';
 		this.options.method = "POST";
+		this.options.onFailureMessage = 'Unable to create commit on usercontent.';
 
 		return fetchJSON(this.options);
 	},
@@ -158,6 +154,7 @@ Resource = {
 		this.options.path = '/resources/' + this.id + '/fetches';
 		this.options.method = "POST";
 		this.options.headers["Content-Type"] = "application/x-www-form-urlencoded"
+		this.options.onFailureMessage = 'Unable to fetch resource on usercontent.';
 
 		function dateToISOString (date) {
 			return (typeof date !== "undefined" && typeof date.getMonth == "function")
@@ -235,6 +232,7 @@ Scraper = {
 
 		this.options.path = '/scraper/fetch';
 		this.options.method = 'GET';
+		this.options.onFailureMessage = 'Unable to get resources from API.';
 
 		return fetchJSON(this.options);
 	}
@@ -267,13 +265,11 @@ function fetchJSON (options) {
 					if (response.statusCode && (response.statusCode >= 200 && response.statusCode < 300))
 						{ return resolve(response); }
 					else {
-						logger.error("Error from reponse receive :", e);
-						return reject(response);
+						return reject(APIError.badImplementation('Error from reponse received.'));
 					}
 				}
 				catch (e) {
-					logger.error("FetchJSON catch Error:", e);
-					return reject(APIError.badImplementation('Failed to parse API response as JSON.'));
+					return reject(APIError.badImplementation('Failed to parse API response as JSON.', e));
 				}
 			});
 		});
@@ -282,8 +278,7 @@ function fetchJSON (options) {
 			{ req.write(options.body); }
 
 		req.on("error", (e) => {
-			logger.error("Req.on Error:", e);
-			return reject(APIError.badImplementation('Failed to contact API.'));
+			return reject(APIError.badImplementation('Failed to contact API.', e));
 		});
 		req.end();
 	});

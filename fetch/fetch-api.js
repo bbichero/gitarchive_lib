@@ -1,5 +1,6 @@
 const https	= require("https");
 const http	= require("http");
+const APIError	= require("../api/error");
 
 module.exports = function (path, method, config, form = null) {
 	// use api error lib
@@ -46,7 +47,7 @@ function	makeRequest (options, self, form = false, loop = false) {
 			let bodyResponse = "";
 
 			if (res.statusCode === 401)
-				reject({code: 401, message: "Authentication required."});
+				return reject(APIError.unauthorized("Authentication required."));
 			else if (res.statusCode === 302) {
 				let newOptions = options;
 				newOptions.path = res.headers["location"];
@@ -62,19 +63,16 @@ function	makeRequest (options, self, form = false, loop = false) {
 					self.resolve(jsonResponse);
 				}
 				catch (e) {
-					console.error("Error parsing response:", e)
-					self.reject({code: 404, message: "No response from API."});
+					return self.reject(APIError.notFound("No response from API", e));
 				}
 			});
 		});
 		req.on("error", (e) => {
-			console.error("Error request return:", e)
-			self.reject({code: 500, message: "Unable to contact API."});
+			return self.reject(APIError.serviceUnavailable("Unable to contact API.", e));
 		})
 	}
 	catch (e) {
-		console.error("Error request:", e)
-		self.reject({code: 500, message: "Unable to contact API."});
+		return self.reject(APIError.serviceUnavailable("Unable to contact API.", e));
 	}
 
 	// write data to request body
