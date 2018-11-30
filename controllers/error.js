@@ -1,11 +1,9 @@
 /**
  * All API Errors Handler
- *
- * @param {*} err
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
+
+const logger		= require('../api/logger');
+const APIError		= require('../api/error');
 
 module.exports = function (err, req, res, next) {
 
