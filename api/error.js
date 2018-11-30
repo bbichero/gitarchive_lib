@@ -1,5 +1,7 @@
 'use strict';
 
+const	logger = require("./logger");
+
 // Inspired from https://www.npmjs.com/package/boom
 module.exports = class CustomBoom extends Error {
 
@@ -14,7 +16,9 @@ module.exports = class CustomBoom extends Error {
 		error.data = data;
 		error.statusCode = statusCode;
 		error.message = err;
-		throw new CustomBoom(error);
+
+		// log error with winston
+		logger.error(error);
 
 		return error;
 	}
