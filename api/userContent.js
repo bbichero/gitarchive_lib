@@ -7,9 +7,9 @@ const https = require("https");
 module.exports = {
 	getUsercontentRaw: (options, req, res, next) => {
 		try {
-			var request = https.get(options, usercontent => {
+			var request = https.request(options, usercontent => {
 
-			//	res.writeHead(usercontent.statusCode, usercontent.headers);
+				//res.writeHead(usercontent.statusCode, usercontent.headers);
 
 				usercontent.on("data", chunk => { return res.write(chunk); });
 				usercontent.on("close", () => { return res.end(); });
