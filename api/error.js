@@ -16,7 +16,7 @@ module.exports = class CustomBoom extends Error {
 		error.statusCode = statusCode;
 
 		// log error with winston
-		logger.error(`code: ${error.statusCode}` + (error.data ? `, ${error.data}` : "") + `, message: ${error.message}`);
+//		logger.error(`code: ${error.statusCode}` + (error.data ? `, ${error.data}` : "") + `, message: ${error.message}`);
 
 		return error;
 	}

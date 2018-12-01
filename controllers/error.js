@@ -23,8 +23,15 @@ module.exports = function (err, req, res, next) {
 		message: (err.message) ? err.message : "That's all we know.",
 	};
 
+	const remoteUser = req.header('Authorization');
+	const userAgent = req.header('User-Agent');
+	const remoteAddress = (req.header('X-Forwarded-For') || '').split(',').pop()
+		|| req.connection.remoteAddress
+		|| req.socket.remoteAddress
+		|| req.connection.socket.remoteAddress;
+
 	// Doing stuff with logging the error.
-	console.error("console err:", error)
+	logger.error([remoteAddress, remoteUser, ("\"" + req.method + " " + req.originalUrl + "\""), error.statusCode, "\"" + userAgent + "\"", (error.data ? error.data : ""), error.message].join(" "));
 
 	// Returning the error to the client.
 	return res.status(error.statusCode).send(error);
