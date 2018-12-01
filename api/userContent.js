@@ -9,7 +9,10 @@ module.exports = {
 		try {
 			var request = https.request(options, usercontent => {
 
-			//	res.writeHead(usercontent.statusCode, usercontent.headers);
+				if (usercontent.statusCode >= 500)
+					throw APIError.serviceUnavailable("Can't contact remote service.");
+			
+		//		res.writeHead(usercontent.statusCode, usercontent.headers);
 				usercontent.on("data", chunk => { return res.write(chunk); });
 				usercontent.on("close", () => { return res.end(); });
 				usercontent.on("end", () => { return res.end(); });
@@ -21,6 +24,7 @@ module.exports = {
 			request.end();
 		}
 		catch (e) {
+				throw APIError.badImplementation('Unable to connect with usercontent');
 			return next(APIError.badImplementation('Unable to connect with usercontent', e));
 		}
 	},
@@ -52,7 +56,7 @@ module.exports = {
 
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + commitId + '/' + fileName;
 		options.method = 'GET';
-		options.onFailureMessage = '1Unable to get raw data on usercontent.';
+		options.onFailureMessage = 'Unable to get raw data on usercontent.';
 
 		return module.exports.getUsercontentRaw(options, req, res, next);
 	},

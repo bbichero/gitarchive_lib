@@ -19,7 +19,7 @@ const logger = createLogger({
 				),
                 level:'debug',
                 name: 'console',
-                // handleExceptions: true,
+                handleExceptions: true,
                 // prettyPrint: true,
                 // silent:false,
                 // timestamp: true,
