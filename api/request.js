@@ -109,6 +109,14 @@ Resource = {
 		return this._setRaw(this.options, headers);
 	},
 
+	setRawDom: function (headers) {
+
+		this.options.path = '/resources/' + this.id + '/raw/dom';
+		this.options.onFailureMessage = 'Unable to set raw dom on usercontent.';
+
+		return this._setRaw(this.options, headers);
+	},
+
 	_setRaw: function (options, data) {
 
 		if (options.path_prefix)
