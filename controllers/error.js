@@ -33,6 +33,9 @@ module.exports = function (err, req, res, next) {
 	// Doing stuff with logging the error.
 	logger.error([remoteAddress, remoteUser, ("\"" + req.method + " " + req.originalUrl + "\""), error.statusCode, "\"" + userAgent + "\"", (error.data ? error.data : ""), error.message].join(" "));
 
+	// error.data must be only for admin user (can tell critical information about the architecture)
+	delete error.data;
+
 	// Returning the error to the client.
 	return res.status(error.statusCode).send(error);
 };
