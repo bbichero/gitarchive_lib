@@ -9,16 +9,18 @@ module.exports = {
 		try {
 			var request = https.get(options, usercontent => {
 
-				res.writeHead(usercontent.statusCode, usercontent.headers);
+			//	res.writeHead(usercontent.statusCode, usercontent.headers);
 
 				usercontent.on("data", chunk => { return res.write(chunk); });
 				usercontent.on("close", () => { return res.end(); });
 				usercontent.on("end", () => { return res.end(); });
 			});
 
+			request.write(req.body);
 			request.on("error", (e) => {
 				return next(APIError.badImplementation('Unable to connect with usercontent', e));
 			})
+			request.end();
 		}
 		catch (e) {
 			return next(APIError.badImplementation('Unable to connect with usercontent', e));
