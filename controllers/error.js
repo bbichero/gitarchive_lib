@@ -23,9 +23,18 @@ module.exports = function (err, req, res, next) {
 		message: (err.message) ? err.message : "That's all we know.",
 	};
 
+	const remoteUser = req.header('Authorization');
+	const userAgent = req.header('User-Agent');
+	const remoteAddress = (req.header('X-Forwarded-For') || '').split(',').pop()
+		|| req.connection.remoteAddress
+		|| req.socket.remoteAddress
+		|| req.connection.socket.remoteAddress;
+
 	// Doing stuff with logging the error.
-	logger.error(error);
-	throw APIError.badImplementation(error);
+	logger.error([remoteAddress, remoteUser, ("\"" + req.method + " " + req.originalUrl + "\""), error.statusCode, "\"" + userAgent + "\"", (error.data ? error.data : ""), error.message].join(" "));
+
+	// error.data must be only for admin user (can tell critical information about the architecture)
+	delete error.data;
 
 	// Returning the error to the client.
 	return res.status(error.statusCode).send(error);

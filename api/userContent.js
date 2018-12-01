@@ -7,23 +7,23 @@ const https = require("https");
 module.exports = {
 	getUsercontentRaw: (options, req, res, next) => {
 		try {
-			var request = https.get(options, usercontent => {
+			var request = https.request(options, usercontent => {
 
-				res.writeHead(usercontent.statusCode, usercontent.headers);
+				//res.writeHead(usercontent.statusCode, usercontent.headers);
 
 				usercontent.on("data", chunk => { return res.write(chunk); });
 				usercontent.on("close", () => { return res.end(); });
 				usercontent.on("end", () => { return res.end(); });
 			});
 
+			request.write(req.body);
 			request.on("error", (e) => {
-				console.error("getUsercontentRaw req.on error:", e);
-				return next(APIError.badImplementation('Unable to connect with usercontent'));
+				return next(APIError.badImplementation('Unable to connect with usercontent', e));
 			})
+			request.end();
 		}
 		catch (e) {
-			console.error("getUsercontentRaw catch", e);
-			return next(APIError.badImplementation('Unable to connect with usercontent'));
+			return next(APIError.badImplementation('Unable to connect with usercontent', e));
 		}
 	},
 
@@ -39,14 +39,12 @@ module.exports = {
 			});
 			request.write(req.body);
 			request.on("error", (e) => {
-				console.error("setUsercontentRaw req.on error:", e);
-				return next(APIError.badImplementation('Unable to connect with usercontent'));
+				return next(APIError.badImplementation('Unable to connect with usercontent', e));
 			});
 			request.end();
 		}
 		catch (e) {
-			console.error("setUsercontentRaw catch error:", e);
-			return next(APIError.badImplementation('Unable to connect with usercontent'));
+			return next(APIError.badImplementation('Unable to connect with usercontent', e));
 		}
 	},
 
@@ -64,6 +62,7 @@ module.exports = {
 	setRaw: (req, res, next, config, ResourceItem, fileName) => {
 
 		const options = APIRequest.usercontent(config, ResourceItem).options;
+
 		options.path += '/resources/' + ResourceItem.id + '/raw/' + fileName;
 		options.method = 'POST';
 		options.onFailureMessage = 'Unable to set raw data on usercontent.';
