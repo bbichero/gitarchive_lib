@@ -31,4 +31,7 @@ module.exports = class ApiSuccess extends Object {
 		return new ApiSuccess("usercontent_diff", {data:chunks});
 	}
 
+	static UsercontentParser (data) {
+		return new ApiSuccess("usercontent_parser", {data: data});
+	}
 }
