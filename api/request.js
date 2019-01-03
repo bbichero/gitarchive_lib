@@ -127,7 +127,7 @@ Resource = {
 
 		return new Promise(function (resolve, reject) {
 			try {
-				const port = options.port == 443 ? https : http
+				const port = (options.port == 443 || options.secure) ? https : http
 				const request = port.request(options, res => {
 
 					if (res.statusCode === 200)
@@ -258,7 +258,7 @@ function fetchJSON (options) {
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
-		const port = options.port == 443 ? https : http
+		const port = (options.port == 443 || options.secure) ? https : http
 		const req = port.request(options, (APIResponse) => {
 
 			// const { statusCode } = APIResponse;
