@@ -40,7 +40,7 @@ function	makeRequest (options, self, form = false, loop = false) {
 	let req;
 
 	try {
-		const port = (options.port == 443 || options.secure) ? https : http
+		const port = (options.port == 443 || options.ssl) ? https : http
 
 		req = port.request(options, (res) => {
 			res.setEncoding('utf8');

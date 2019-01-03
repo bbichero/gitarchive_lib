@@ -46,6 +46,9 @@ RequestOptions = function (config, type, path, usercontent_id) {
 	const _path = (typeof path == "string") ? path : "";
 	options = {};
 
+	if (config.ssl)
+		options.ssl = config.ssl;
+
 	if (["api", "usercontent"].indexOf(type) > -1) {
 		if (!config.hostname || !config.port || !config.version || !config.token) {
 			console.error("Invalid config given.");
@@ -127,7 +130,7 @@ Resource = {
 
 		return new Promise(function (resolve, reject) {
 			try {
-				const port = (options.port == 443 || options.secure) ? https : http
+				const port = (options.port == 443 || options.ssl) ? https : http
 				const request = port.request(options, res => {
 
 					if (res.statusCode === 200)
@@ -258,7 +261,7 @@ function fetchJSON (options) {
 		if (options.path_prefix)
 			{ options.path = options.path_prefix + options.path; }
 
-		const port = (options.port == 443 || options.secure) ? https : http
+		const port = (options.port == 443 || options.ssl) ? https : http
 		const req = port.request(options, (APIResponse) => {
 
 			// const { statusCode } = APIResponse;
